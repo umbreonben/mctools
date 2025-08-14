@@ -1,3 +1,3 @@
 export default {
-  base: '/umbreonben/', // replace with your repo name
+  base: '/mctools/', // replace with your repo name
 }

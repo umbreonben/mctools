@@ -8,14 +8,23 @@
   </head>
   <body>
     <main>
+      <h1>wall length thingy generator™</h1>
       <div class="inputs">
-        <h1>where-can-i-place-da-glass generator</h1>
-        <label for="wallLength">wall length</label>
-        <input type="number" id="wallLength" min="3" value="7" />
-        <button id="generateBtn">cast magic spell</button>
+        <div class="input">
+          <label for="wallLength">wall length</label>
+          <input type="number" id="wallLength" min="3" value="7" />
+        </div>
+        <button id="generateBtn"><span>cast magic spell</span></button>
       </div>
 
-      <div id="results"></div>
+      <div class="results">
+        <div id="patternResults"></div>
+        <div id="divisionResults"></div>
+      </div>
+
+      <div class="clouds">
+            <img class="cloud" src="/images/clouds/clouds.webp">
+      </div>
 
     </main>
     <script type="module" src="/src/main.js"></script>

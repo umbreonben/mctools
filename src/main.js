@@ -27,9 +27,7 @@ function findValidAirPatternsAllowAdjacents(wallLength) {
     }
 
     if (pattern[innerStart] === 0 || pattern[innerEnd] === 0) continue;
-
     if (!pattern.includes(0)) continue;
-
     if (!isSymmetrical(pattern)) continue;
 
     validPatterns.push(pattern);
@@ -59,27 +57,65 @@ function renderPattern(pattern, index) {
   return patternContainer;
 }
 
+// NEW: function to get possible room divisions
+function getPossibleRooms(wallLength, dividerThickness) {
+  const results = [];
+  for (let rooms = 2; rooms <= wallLength; rooms++) {
+    const dividers = rooms - 1;
+    const remainingLength = wallLength - (dividers * dividerThickness);
+    const roomWidth = remainingLength / rooms;
+
+    if (Number.isInteger(roomWidth) && roomWidth > 0) {
+      results.push({ rooms, roomWidth });
+    }
+  }
+  return results;
+}
+
 document.getElementById('generateBtn').addEventListener('click', () => {
   const wallLength = parseInt(document.getElementById('wallLength').value, 10);
+  const dividerThickness = 1; // fixed as in your example
 
-  const results = findValidAirPatternsAllowAdjacents(wallLength);
-  const resultsDiv = document.getElementById('results');
-  resultsDiv.innerHTML = '';
+  // PATTERN RESULTS
+  const patterns = findValidAirPatternsAllowAdjacents(wallLength);
+  const patternResultsDiv = document.getElementById('patternResults');
+  patternResultsDiv.innerHTML = '';
+  patternResultsDiv.style.opacity = '1';
 
-  if (results.length === 0) {
-    resultsDiv.textContent = 'no valid patterns found';
-    return;
+  if (patterns.length === 0) {
+    patternResultsDiv.textContent = 'no valid patterns found';
+  } else {
+    const heading = document.createElement('h2');
+    heading.textContent = 'patterns';
+    patternResultsDiv.appendChild(heading);
+
+    patterns.forEach((pattern, i) => {
+      const rendered = renderPattern(pattern, i);
+      patternResultsDiv.appendChild(rendered);
+      const hr = document.createElement('hr');
+      patternResultsDiv.appendChild(hr);
+    });
   }
 
-  const heading = document.createElement('h2');
-  heading.textContent = 'patterns';
-  resultsDiv.appendChild(heading);
+  // ROOM DIVISION RESULTS
+  const divisions = getPossibleRooms(wallLength, dividerThickness);
+  const divisionResultsDiv = document.getElementById('divisionResults');
+  divisionResultsDiv.innerHTML = '';
+  divisionResultsDiv.style.opacity = '1';
 
-  results.forEach((pattern, i) => {
-    const rendered = renderPattern(pattern, i);
-    resultsDiv.appendChild(rendered);
+  const divisionHeading = document.createElement('h2');
+  divisionHeading.textContent = 'even room divisions';
+  divisionResultsDiv.appendChild(divisionHeading);
 
-    const hr = document.createElement('hr');
-    resultsDiv.appendChild(hr);
-  });
+  if (divisions.length === 0) {
+    const noDivisions = document.createElement('p');
+    noDivisions.textContent = 'no even divisions found';
+    divisionResultsDiv.appendChild(noDivisions);
+  } else {
+    divisions.forEach(d => {
+      const p = document.createElement('p');
+      p.textContent = `${d.rooms} rooms → each ${d.roomWidth} wide`;
+      divisionResultsDiv.appendChild(p);
+    });
+  }
 });

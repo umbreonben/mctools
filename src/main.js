@@ -57,6 +57,28 @@ function renderPattern(pattern, index) {
   return patternContainer;
 }
 
+function renderRoomDivision(rooms, roomWidth, dividerThickness) {
+  const container = document.createElement('div');
+  container.className = 'blocks';
+
+  for (let i = 0; i < rooms; i++) {
+    for (let j = 0; j < roomWidth; j++) {
+      const roomBlock = document.createElement('div');
+      roomBlock.className = 'block room';
+      container.appendChild(roomBlock);
+    }
+    if (i < rooms - 1) {
+      for (let k = 0; k < dividerThickness; k++) {
+        const dividerBlock = document.createElement('div');
+        dividerBlock.className = 'block divider';
+        container.appendChild(dividerBlock);
+      }
+    }
+  }
+
+  return container;
+}
+
 // NEW: function to get possible room divisions
 function getPossibleRooms(wallLength, dividerThickness) {
   const results = [];
@@ -86,14 +108,12 @@ document.getElementById('generateBtn').addEventListener('click', () => {
     patternResultsDiv.textContent = 'no valid patterns found';
   } else {
     const heading = document.createElement('h2');
-    heading.textContent = 'patterns';
+    heading.textContent = 'glass patterns';
     patternResultsDiv.appendChild(heading);
 
     patterns.forEach((pattern, i) => {
       const rendered = renderPattern(pattern, i);
       patternResultsDiv.appendChild(rendered);
-      const hr = document.createElement('hr');
-      patternResultsDiv.appendChild(hr);
     });
   }
 
@@ -112,10 +132,13 @@ document.getElementById('generateBtn').addEventListener('click', () => {
     noDivisions.textContent = 'no even divisions found';
     divisionResultsDiv.appendChild(noDivisions);
   } else {
-    divisions.forEach(d => {
-      const p = document.createElement('p');
-      p.textContent = `${d.rooms} rooms → each ${d.roomWidth} wide`;
-      divisionResultsDiv.appendChild(p);
+    divisions.forEach((d, i) => {
+      const label = document.createElement('p');
+      label.textContent = `${d.rooms} rooms → each ${d.roomWidth} wide`;
+      divisionResultsDiv.appendChild(label);
+
+      const blocks = renderRoomDivision(d.rooms, d.roomWidth, dividerThickness);
+      divisionResultsDiv.appendChild(blocks);
     });
   }
 });
